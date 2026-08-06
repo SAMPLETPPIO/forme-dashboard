@@ -1,0 +1,6 @@
+infrastructure/terraform.tfvars
+*.tfstate
+*.tfstate.backup
+.env
+.evn
+.evn.example
