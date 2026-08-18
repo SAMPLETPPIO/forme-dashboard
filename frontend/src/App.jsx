@@ -97,6 +97,14 @@ function ScheduleTimeline({ bookings }) {
 
 function NewBookingModal({ open, onClose, onCreate, clients }) {
   const [form, setForm] = useState({ client_id: '', class_name: '', trainer: '', date: '', start_time: '07:00', end_time: '08:00' })
+  
+  // Reset form when modal opens/closes
+  useEffect(() => {
+    if (!open) {
+      setForm({ client_id: '', class_name: '', trainer: '', date: '', start_time: '07:00', end_time: '08:00' })
+    }
+  }, [open])
+
   if (!open) return null
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
@@ -131,19 +139,44 @@ export default function App() {
   const [clients, setClients] = useState([])
   const [showNew, setShowNew] = useState(false)
 
+  // FIX 1: Centralized fetch function - sab kuch ek saath laayega
+  const fetchAll = async () => {
+    try {
+      const [s, b, c] = await Promise.all([
+        api('/stats'),
+        api('/bookings'),
+        api('/clients')
+      ])
+      setStats(s)
+      setBookings(b)
+      setClients(c)
+    } catch (err) {
+      console.error('Fetch failed:', err)
+    }
+  }
+
   useEffect(() => {
-    api('/stats').then(setStats).catch(() => {})
-    api('/bookings').then(setBookings).catch(() => {})
-    api('/clients').then(setClients).catch(() => {})
+    fetchAll()
   }, [])
 
+  // FIX 2: Booking create ke baad stats + bookings dono instantly update
   const createBooking = async (form) => {
     try {
+      // Validation
+      if (!form.client_id || !form.class_name || !form.date) {
+        alert('Please fill all required fields')
+        return
+      }
+      
       await api('/bookings', { method: 'POST', body: form })
-      const b = await api('/bookings')
-      setBookings(b)
+      
+      // FIX: Dono ko ek saath fetch karo - bina refresh ke instantly dikhega
+      await fetchAll()
+      
       setShowNew(false)
-    } catch (e) { alert(e.message) }
+    } catch (e) { 
+      alert(e.message) 
+    }
   }
 
   return (
