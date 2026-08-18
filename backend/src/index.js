@@ -14,3 +14,7 @@ app.use('/api/clients', clientsRouter);
 app.use('/api/stats', statsRouter);
 async function start(){ await waitForDb(); await initDb(); app.listen(PORT,'0.0.0.0',()=>console.log(`API :${PORT}`)); }
 start();
+app.use((req, res, next) => {
+  res.set('Cache-Control', 'no-store, no-cache, must-revalidate');
+  next();
+});
