@@ -150,10 +150,10 @@ sudo certbot --nginx -d himanshu-project.shamaacademy.online
 
 👨‍💻 Author
 
-Himanshu Balyan - Full Stack + DevOps
+Himanshu Balyan - DevOps
 
     Live: https://himanshu-project.shamaacademy.online
-    GitHub: @SAMPLETPPIO
+    GitHub: @himanshu-devops2007
 
     Looking for Full-Stack / DevOps roles - This project shows end-to-end ownership from code to cloud.
 
